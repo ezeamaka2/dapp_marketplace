@@ -30,6 +30,7 @@ contract Marketplace{
     event BuyProduct(address buyers, address seller, uint price, bool success);
     
     
+    // MyToken Contract address
     address internal MTPtoken = 0x3643b7a9F6338115159a4D3a2cc678C99aD657aa;
     
     uint totalProducts;
@@ -70,6 +71,13 @@ contract Marketplace{
     function buyProduct(uint _index) public payable  {
         MyToken testToken = MyToken(MTPtoken);
         uint price = products[_index].price;
+        
+        if(_index > totalProducts){
+            revert productNotAvailable ({
+                requested: _index,
+                total: totalProducts
+            });
+        }
         
         require(testToken.balanceOf(msg.sender) > price, "You have insufficient balance");
         require(
